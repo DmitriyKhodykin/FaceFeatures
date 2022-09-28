@@ -46,9 +46,11 @@ with mp_face_mesh.FaceMesh(
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
+                kp = _keypoints(face_landmarks)
+                print(kp[0]["x"])
                 du = DrawingUtils(image)
-                du.drawing_landmarks(face_landmarks, "tesselation")
-                du.drawing_landmarks(face_landmarks, "contours")
+                # du.drawing_landmarks(face_landmarks, "tesselation")
+                # du.drawing_landmarks(face_landmarks, "contours")
                 du.drawing_landmarks(face_landmarks, "irises")
 
         # Flip the image horizontally for a selfie-view display.

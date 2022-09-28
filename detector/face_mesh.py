@@ -10,6 +10,18 @@ class DrawingUtils:
         self.mp_drawing_styles = mp.solutions.drawing_styles
         self.image = image
 
+    
+    def _keypoints(self, landmark_list):
+        keypoints = []
+
+        for data_point in landmark_list.landmark:
+            keypoints.append({
+                "x": data_point.x,
+                "y": data_point.y,
+                "z": data_point.z
+            })
+        return keypoints
+
     def drawing_landmarks(self, landmarks, mesh_type):
         """Draws different configurations of lines and dots on the face.
         mesh_type:
@@ -41,4 +53,5 @@ class DrawingUtils:
                 landmark_drawing_spec=None,
                 connection_drawing_spec=self.mp_drawing_styles.get_default_face_mesh_iris_connections_style(),
             )
+
         return self
