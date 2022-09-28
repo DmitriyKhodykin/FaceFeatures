@@ -8,6 +8,18 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_face_mesh = mp.solutions.face_mesh
 
 
+def _keypoints(landmark_list):
+    keypoints = []
+
+    for data_point in landmark_list.landmark:
+        keypoints.append({
+            "x": data_point.x,
+            "y": data_point.y,
+            "z": data_point.z
+        })
+    return keypoints
+
+
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 cap = cv2.VideoCapture(0)
 with mp_face_mesh.FaceMesh(
