@@ -1,26 +1,45 @@
+""" Mediapipe module for drawing face mesh landmarks.
+Landmarks (keypoints) defenition:
+https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/
+mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+"""
+
 import mediapipe as mp
+import numpy as np
 
 mp_face_mesh = mp.solutions.face_mesh
 
 
-class DrawingUtils:
+class CustomDrawingUtils:
+    def __init__(self, image):
+        self.image = image
+        self.model = FaceModel().create_facemesh_model()
+        self.results = self.model.process(image)
 
+    def get_glases_coordinates(self):
+        all_faces_keypoints = self._get_face_keypoints()
+        glases_keypoints = [all_faces_keypoints[[71, 301, 346, 6, 117]]]
+        return glases_keypoints
+
+    def _get_face_keypoints(self):
+        img_h, img_w = self.image.shape[:2]
+
+        if self.results.multi_face_landmarks:
+
+            face_points = np.array(
+                [
+                    np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
+                    for p in self.results.multi_face_landmarks[0].landmark
+                ]
+            )
+            return face_points
+
+
+class DrawingUtils:
     def __init__(self, image):
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
         self.image = image
-
-    
-    def _keypoints(self, landmark_list):
-        keypoints = []
-
-        for data_point in landmark_list.landmark:
-            keypoints.append({
-                "x": data_point.x,
-                "y": data_point.y,
-                "z": data_point.z
-            })
-        return keypoints
 
     def drawing_landmarks(self, landmarks, mesh_type):
         """Draws different configurations of lines and dots on the face.
@@ -28,6 +47,7 @@ class DrawingUtils:
             FACEMESH_TESSELATION
             FACEMESH_CONTOURS
             FACEMESH_IRISES
+        See: https://google.github.io/mediapipe/solutions/face_mesh.html
         """
         if mesh_type == "tesselation":
             self.mp_drawing.draw_landmarks(
@@ -58,11 +78,13 @@ class DrawingUtils:
 
 
 class FaceModel:
-
     def __init__(self):
         self.mp_face_mesh = mp.solutions.face_mesh
 
-    def create_model(self):
+    def create_facemesh_model(self):
+        """Set model parameters.
+        See: https://google.github.io/mediapipe/solutions/face_mesh.html
+        """
         model = self.mp_face_mesh.FaceMesh(
             max_num_faces=1,
             refine_landmarks=True,

@@ -3,17 +3,8 @@ import mediapipe as mp
 import numpy as np
 
 from detector.face_mesh import FaceModel
+from detector.face_mesh import CustomDrawingUtils
 from utils.imtransformer import ImageTransforming
-
-from config import LEFT_EYE, RIGHT_EYE
-
-
-def _keypoints(landmark_list):
-    keypoints = []
-
-    for data_point in landmark_list.landmark:
-        keypoints.append({"x": data_point.x, "y": data_point.y, "z": data_point.z})
-    return keypoints
 
 
 class Main:
@@ -25,7 +16,7 @@ class Main:
 
         capture = cv2.VideoCapture(0)
 
-        with FaceModel().create_model() as face_mesh:
+        with FaceModel().create_facemesh_model() as face_mesh:
             while capture.isOpened():
                 success, image = capture.read()
                 if not success:
@@ -39,28 +30,15 @@ class Main:
                 results = face_mesh.process(image)
                 imt.change_color(cv2.COLOR_RGB2BGR)
 
-                img_h, img_w = image.shape[:2]
-
                 if results.multi_face_landmarks:
 
-                    eyes_points = np.array(
-                        [
-                            np.multiply([p.x, p.y], [img_w, img_h]).astype(int)
-                            for p in results.multi_face_landmarks[0].landmark
-                        ]
-                    )
+                    glases_coordinates = CustomDrawingUtils(
+                        image
+                    ).get_glases_coordinates()
 
                     cv2.polylines(
                         image,
-                        [eyes_points[LEFT_EYE]],
-                        True,
-                        (0, 255, 0),
-                        1,
-                        cv2.LINE_AA,
-                    )
-                    cv2.polylines(
-                        image,
-                        [eyes_points[RIGHT_EYE]],
+                        glases_coordinates,
                         True,
                         (0, 255, 0),
                         1,
