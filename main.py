@@ -4,7 +4,7 @@ import cvzone
 import numpy as np
 
 from detector.face_mesh import FaceModel
-from detector.face_mesh import CustomDrawingUtils
+from recognizer.face_recognizer import CustomDrawingUtils
 from utils.imtransformer import ImageTransforming
 
 
@@ -34,6 +34,7 @@ class Main:
                 frame_h, frame_w = frame.shape[:2]
 
                 # Overlaying the image of glasses.
+                result_frame = None
                 glasses_img = cv2.imread("static/glasses.png", cv2.IMREAD_UNCHANGED)
                 
                 if results.multi_face_landmarks:
