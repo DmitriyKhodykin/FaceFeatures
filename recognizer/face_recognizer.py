@@ -28,9 +28,17 @@ class CustomDrawingUtils:
         """
         all_faces_keypoints = self._get_face_keypoints()
         if area == "full":
-            glases_keypoints = [all_faces_keypoints[[71, 301, 346, 6, 117]]]
+            try:
+                glases_keypoints = [all_faces_keypoints[[71, 301, 346, 6, 117]]]
+            except TypeError as error:
+                print("FaceRecognizerError:", error)
+
         elif area == "upper_edge":
-            glases_keypoints = [all_faces_keypoints[[71, 301]]]
+            try:
+                glases_keypoints = [all_faces_keypoints[[71, 301]]]
+            except TypeError as error:
+                print("FaceRecognizerError:", error)
+
         return glases_keypoints
 
     def _get_face_keypoints(self):
