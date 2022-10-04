@@ -28,7 +28,7 @@ class ImageTransforming:
         height = int(self.y_shape * image_scale_percent / 100)
         dim = (width, height)
         self.image = cv2.resize(self.image, dim)
-        return self
+        return self.image
 
     def put_text_into_image(
         self,

@@ -1,7 +1,12 @@
 """ Mediapipe module for drawing face mesh landmarks.
+
 Landmarks (keypoints) defenition:
 https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/
 mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+
+Docs:
+    * How to Overlay Transparent PNG Image Over Video: https://www.youtube.com/watch?v=1LfKNmOJgjw
+    * PNG Overlay and Image Rotation: https://www.youtube.com/watch?v=voRFbl-GKGY
 """
 
 import mediapipe as mp
@@ -16,9 +21,17 @@ class CustomDrawingUtils:
         self.model = FaceModel().create_facemesh_model()
         self.results = self.model.process(image)
 
-    def get_glases_coordinates(self):
+    def get_glasses_coordinates(self, area: str):
+        """Returns the coordinates of the eye area in the face picture.
+        area:
+            * full - 5 coordinates from glasses area
+            * upper_edge - 2 coordinates of upper edge of the eyebrows
+        """
         all_faces_keypoints = self._get_face_keypoints()
-        glases_keypoints = [all_faces_keypoints[[71, 301, 346, 6, 117]]]
+        if area == "full":
+            glases_keypoints = [all_faces_keypoints[[71, 301, 346, 6, 117]]]
+        elif area == "upper_edge":
+            glases_keypoints = [all_faces_keypoints[[71, 301]]]
         return glases_keypoints
 
     def _get_face_keypoints(self):
