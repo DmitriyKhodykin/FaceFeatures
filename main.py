@@ -59,7 +59,9 @@ class Main:
                         continue
 
                 # Flip the image horizontally for a selfie-view display.
-                cv2.imshow("Glasses", cv2.flip(result_frame, 1))
+                fliped_frame = cv2.flip(result_frame, 1)
+                
+                cv2.imshow("Glasses", fliped_frame)
 
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
