@@ -31,17 +31,30 @@ class Main:
                 results = face_mesh.process(frame)
                 imt.change_color(cv2.COLOR_RGB2BGR)
 
-                frame_h, frame_w = frame.shape[:2]
-
                 # Overlaying the image of glasses.
                 result_frame = None
                 glasses_img = cv2.imread("static/glasses.png", cv2.IMREAD_UNCHANGED)
-                
+
                 if results.multi_face_landmarks:
 
-                    all_faces_keypoints = CustomDrawingUtils(frame).get_glasses_coordinates("upper_edge")
+                    all_faces_keypoints = CustomDrawingUtils(
+                        frame
+                    ).get_glasses_coordinates("upper_edge")
+                    
                     glasses_img = ImageTransforming(glasses_img).scaling_image(50)
-                    result_frame = cvzone.overlayPNG(frame, glasses_img, [220, 180])
+                    
+                    try:
+                        result_frame = cvzone.overlayPNG(
+                            frame,
+                            glasses_img,
+                            [
+                                all_faces_keypoints[0][0][0] - 50,
+                                all_faces_keypoints[0][1][1] - 20,
+                            ],
+                        )
+                    except Exception as error:
+                        print(error)
+                        continue
 
                 # Flip the image horizontally for a selfie-view display.
                 cv2.imshow("Glasses", result_frame)
