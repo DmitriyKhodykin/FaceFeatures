@@ -42,16 +42,24 @@ class Main:
                     all_faces_keypoints = CustomDrawingUtils(
                         frame
                     ).get_glasses_coordinates("upper_edge")
+                    
+                    right_eye_x = all_faces_keypoints[0][0][0]
+                    right_eye_y = all_faces_keypoints[0][0][1]                  
+
+                    left_eye_x = all_faces_keypoints[0][1][0]
+                    left_eye_y = all_faces_keypoints[0][1][1]
+
+                    scale_rate = None  # TODO: Scaling rate to scaling glasses
 
                     glasses_img = ImageTransforming(glasses_img).scaling_image(50)
-
+                    print(scale_rate)
                     try:
                         result_frame = cvzone.overlayPNG(
                             frame,
                             glasses_img,
                             [
-                                all_faces_keypoints[0][0][0] - 50,
-                                all_faces_keypoints[0][1][1] - 20,
+                                right_eye_x,
+                                right_eye_y,
                             ],
                         )
                     except Exception as error:
